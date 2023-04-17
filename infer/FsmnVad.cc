@@ -16,9 +16,9 @@ void FsmnVad::init_vad(const std::string &vad_model, int vad_sample_rate, int va
     session_options_.SetGraphOptimizationLevel(ORT_ENABLE_ALL);
     session_options_.DisableCpuMemArena();
     this->vad_sample_rate_ = vad_sample_rate;
-    this->vad_silence_duration_=vad_silence_duration;
-    this->vad_max_len_=vad_max_len;
-    this->vad_speech_noise_thres_=vad_speech_noise_thres;
+    this->vad_silence_duration_ = vad_silence_duration;
+    this->vad_max_len_ = vad_max_len;
+    this->vad_speech_noise_thres_ = vad_speech_noise_thres;
 
     read_model(vad_model);
 
@@ -54,7 +54,6 @@ void FsmnVad::read_model(const std::string &vad_model) {
     LOG(INFO) << "vad onnx:";
     GetInputOutputInfo(vad_session_, &vad_in_names_, &vad_out_names_);
 }
-
 
 
 void FsmnVad::GetInputOutputInfo(
@@ -173,6 +172,7 @@ void FsmnVad::FbankKaldi(float sample_rate, std::vector<std::vector<float>> &vad
         vad_feats.emplace_back(frame_vector);
     }
 }
+
 std::vector<std::vector<float>> &FsmnVad::LfrCmvn(std::vector<std::vector<float>> &vad_feats, int lfr_m, int lfr_n) {
 
     std::vector<std::vector<float>> out_feats;
@@ -226,7 +226,7 @@ FsmnVad::infer(const std::vector<float> &waves) {
 
     E2EVadModel vad_scorer = E2EVadModel();
     std::vector<std::vector<int>> vad_segments;
-    vad_segments = vad_scorer(vad_probs, waves, true, vad_silence_duration_, vad_max_len_,
+    vad_segments = vad_scorer(vad_probs, waves, true, false, vad_silence_duration_, vad_max_len_,
                               vad_speech_noise_thres_, vad_sample_rate_);
     return vad_segments;
 
